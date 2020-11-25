@@ -1,19 +1,17 @@
 #
 # TABLE STRUCTURE FOR: communities
 #
-drop database vk1;
-create database vk1;
 
 DROP TABLE IF EXISTS `communities`;
 
 CREATE TABLE `communities` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСЂРѕРєРё',
-  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РќР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор сроки',
+  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Название группы',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Р“СЂСѓРїРїС‹';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Группы';
 
 INSERT INTO `communities` (`id`, `name`, `created_at`, `updated_at`) VALUES (1, 'cumque', '2020-03-09 10:18:55', '2019-12-22 13:09:03');
 INSERT INTO `communities` (`id`, `name`, `created_at`, `updated_at`) VALUES (2, 'iusto', '2020-04-26 16:01:17', '2020-09-08 02:23:39');
@@ -124,11 +122,11 @@ INSERT INTO `communities` (`id`, `name`, `created_at`, `updated_at`) VALUES (100
 DROP TABLE IF EXISTS `communities_users`;
 
 CREATE TABLE `communities_users` (
-  `community_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РіСЂСѓРїРїСѓ',
-  `user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  PRIMARY KEY (`community_id`,`user_id`) COMMENT 'РЎРѕСЃС‚Р°РІРЅРѕР№ РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РЈС‡Р°СЃС‚РЅРёРєРё РіСЂСѓРїРї, СЃРІСЏР·СЊ РјРµР¶РґСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРјРё Рё РіСЂСѓРїРїР°РјРё';
+  `community_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на группу',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на пользователя',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  PRIMARY KEY (`community_id`,`user_id`) COMMENT 'Составной первичный ключ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Участники групп, связь между пользователями и группами';
 
 INSERT INTO `communities_users` (`community_id`, `user_id`, `created_at`) VALUES (0, 0, '2020-01-20 04:22:31');
 
@@ -140,15 +138,15 @@ INSERT INTO `communities_users` (`community_id`, `user_id`, `created_at`) VALUES
 DROP TABLE IF EXISTS `friendship`;
 
 CREATE TABLE `friendship` (
-  `user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РёРЅРёС†РёР°С‚РѕСЂР° РґСЂСѓР¶РµСЃРєРёС… РѕС‚РЅРѕС€РµРЅРёР№',
-  `friend_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїРѕР»СѓС‡Р°С‚РµР»СЏ РїСЂРёРіР»Р°С€РµРЅРёСЏ РґСЂСѓР¶РёС‚СЊ',
-  `status_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° СЃС‚Р°С‚СѓСЃ (С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ) РѕС‚РЅРѕС€РµРЅРёР№',
-  `requested_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕС‚РїСЂР°РІР»РµРЅРёСЏ РїСЂРёРіР»Р°С€РµРЅРёСЏ РґСЂСѓР¶РёС‚СЊ',
-  `confirmed_at` datetime DEFAULT NULL COMMENT 'Р’СЂРµРјСЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РїСЂРёРіР»Р°С€РµРЅРёСЏ',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
-  PRIMARY KEY (`user_id`,`friend_id`) COMMENT 'РЎРѕСЃС‚Р°РІРЅРѕР№ РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РўР°Р±Р»РёС†Р° РґСЂСѓР¶Р±С‹';
+  `user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на инициатора дружеских отношений',
+  `friend_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на получателя приглашения дружить',
+  `status_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на статус (текущее состояние) отношений',
+  `requested_at` datetime DEFAULT current_timestamp() COMMENT 'Время отправления приглашения дружить',
+  `confirmed_at` datetime DEFAULT NULL COMMENT 'Время подтверждения приглашения',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
+  PRIMARY KEY (`user_id`,`friend_id`) COMMENT 'Составной первичный ключ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Таблица дружбы';
 
 INSERT INTO `friendship` (`user_id`, `friend_id`, `status_id`, `requested_at`, `confirmed_at`, `created_at`, `updated_at`) VALUES (1, 95, 0, '2015-11-26 05:16:04', '2015-06-02 09:02:35', '2013-05-08 10:09:27', '2011-12-18 06:34:55');
 INSERT INTO `friendship` (`user_id`, `friend_id`, `status_id`, `requested_at`, `confirmed_at`, `created_at`, `updated_at`) VALUES (2, 4, 0, '2016-07-28 21:20:16', '2018-04-23 16:13:33', '2017-07-24 05:32:37', '2012-09-22 09:17:45');
@@ -259,13 +257,13 @@ INSERT INTO `friendship` (`user_id`, `friend_id`, `status_id`, `requested_at`, `
 DROP TABLE IF EXISTS `friendship_statuses`;
 
 CREATE TABLE `friendship_statuses` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
-  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РќР°Р·РІР°РЅРёРµ СЃС‚Р°С‚СѓСЃР°',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
+  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Название статуса',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РЎС‚Р°С‚СѓСЃС‹ РґСЂСѓР¶Р±С‹';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Статусы дружбы';
 
 INSERT INTO `friendship_statuses` (`id`, `name`, `created_at`, `updated_at`) VALUES (51, '2', '2020-11-14 23:23:26', '2020-10-27 04:04:53');
 INSERT INTO `friendship_statuses` (`id`, `name`, `created_at`, `updated_at`) VALUES (52, '9', '2020-11-10 13:05:16', '2020-11-18 02:01:12');
@@ -285,10 +283,10 @@ INSERT INTO `friendship_statuses` (`id`, `name`, `created_at`, `updated_at`) VAL
 DROP TABLE IF EXISTS `likes`;
 
 CREATE TABLE `likes` (
-  `user_id` int(10) unsigned NOT NULL COMMENT 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ,РїРѕР»СѓС‡РёРІС€РёР№ Р»Р°Р№Рє',
-  `user_post` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'РњРµС‚Р°РґР°РЅРЅС‹Рµ С„Р°Р№Р»Р°' CHECK (json_valid(`user_post`)),
-  `user_from` int(11) NOT NULL COMMENT 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ, РѕС‚РїСЂР°РІРёРІС€РёР№ Р»Р°Р№Рє'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Р›Р°Р№РєРё';
+  `user_id` int(10) unsigned NOT NULL COMMENT 'Пользователь,получивший лайк',
+  `user_post` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Метаданные файла' CHECK (json_valid(`user_post`)),
+  `user_from` int(11) NOT NULL COMMENT 'Пользователь, отправивший лайк'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Лайки';
 
 INSERT INTO `likes` (`user_id`, `user_post`, `user_from`) VALUES (1, '1', 7);
 INSERT INTO `likes` (`user_id`, `user_post`, `user_from`) VALUES (2, '4', 9);
@@ -399,16 +397,16 @@ INSERT INTO `likes` (`user_id`, `user_post`, `user_from`) VALUES (100, '6', 7);
 DROP TABLE IF EXISTS `media`;
 
 CREATE TABLE `media` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
-  `user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Р№ Р·Р°РіСЂСѓР·РёР» С„Р°Р№Р»',
-  `filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ',
-  `size` int(11) NOT NULL COMMENT 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р°',
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'РњРµС‚Р°РґР°РЅРЅС‹Рµ С„Р°Р№Р»Р°' CHECK (json_valid(`metadata`)),
-  `media_type_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° С‚РёРї РєРѕРЅС‚РµРЅС‚Р°',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на пользователя, который загрузил файл',
+  `filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Путь к файлу',
+  `size` int(11) NOT NULL COMMENT 'Размер файла',
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Метаданные файла' CHECK (json_valid(`metadata`)),
+  `media_type_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на тип контента',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РњРµРґРёР°С„Р°Р№Р»С‹';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Медиафайлы';
 
 #
 # TABLE STRUCTURE FOR: media_types
@@ -417,13 +415,13 @@ CREATE TABLE `media` (
 DROP TABLE IF EXISTS `media_types`;
 
 CREATE TABLE `media_types` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РќР°Р·РІР°РЅРёРµ С‚РёРїР°',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Название типа',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РўРёРїС‹ РјРµРґРёР°С„Р°Р№Р»РѕРІ';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Типы медиафайлов';
 
 INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (1, 'ipsum', '2020-11-07 02:54:45', '2020-10-29 16:20:22');
 INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (2, 'dolorum', '2020-10-29 03:09:57', '2020-11-23 06:44:23');
@@ -454,16 +452,16 @@ INSERT INTO `media_types` (`id`, `name`, `created_at`, `updated_at`) VALUES (20,
 DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `messages` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
-  `from_user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РѕС‚РїСЂР°РІРёС‚РµР»СЏ СЃРѕРѕР±С‰РµРЅРёСЏ',
-  `to_user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїРѕР»СѓС‡Р°С‚РµР»СЏ СЃРѕРѕР±С‰РµРЅРёСЏ',
-  `body` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'РўРµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ',
-  `is_important` tinyint(1) DEFAULT NULL COMMENT 'РџСЂРёР·РЅР°Рє РІР°Р¶РЅРѕСЃС‚Рё',
-  `is_delivered` tinyint(1) DEFAULT NULL COMMENT 'РџСЂРёР·РЅР°Рє РґРѕСЃС‚Р°РІРєРё',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
+  `from_user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на отправителя сообщения',
+  `to_user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на получателя сообщения',
+  `body` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Текст сообщения',
+  `is_important` tinyint(1) DEFAULT NULL COMMENT 'Признак важности',
+  `is_delivered` tinyint(1) DEFAULT NULL COMMENT 'Признак доставки',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РЎРѕРѕР±С‰РµРЅРёСЏ';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Сообщения';
 
 INSERT INTO `messages` (`id`, `from_user_id`, `to_user_id`, `body`, `is_important`, `is_delivered`, `created_at`, `updated_at`) VALUES (1, 0, 2588, 'Sed ipsum distinctio ipsa sit accusamus quia soluta. Expedita officiis rerum vero enim perspiciatis. A qui mollitia expedita dolor.', 1, 0, '2015-02-02 15:49:06', '2016-08-29 21:29:11');
 INSERT INTO `messages` (`id`, `from_user_id`, `to_user_id`, `body`, `is_important`, `is_delivered`, `created_at`, `updated_at`) VALUES (2, 2, 12133, 'Qui officia aliquid voluptatem ipsa mollitia officiis. Est voluptas minus ullam eius harum. Ut dolore qui beatae explicabo corrupti vel ea animi. Quo doloremque corporis et nihil ab.', 1, 0, '2020-09-12 21:16:47', '2014-08-30 22:06:27');
@@ -574,17 +572,17 @@ INSERT INTO `messages` (`id`, `from_user_id`, `to_user_id`, `body`, `is_importan
 DROP TABLE IF EXISTS `profiles`;
 
 CREATE TABLE `profiles` (
-  `user_id` int(10) unsigned NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-  `gender` char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РџРѕР»',
-  `birthday` date DEFAULT NULL COMMENT 'Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ',
-  `photo_id` int(10) unsigned DEFAULT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РѕСЃРЅРѕРІРЅСѓСЋ С„РѕС‚РѕРіСЂР°С„РёСЋ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-  `status` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'РўРµРєСѓС‰РёР№ СЃС‚Р°С‚СѓСЃ',
-  `city` varchar(130) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Р“РѕСЂРѕРґ РїСЂРѕР¶РёРІР°РЅРёСЏ',
-  `country` varchar(130) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'РЎС‚СЂР°РЅР° РїСЂРѕР¶РёРІР°РЅРёСЏ',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'Ссылка на пользователя',
+  `gender` char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Пол',
+  `birthday` date DEFAULT NULL COMMENT 'Дата рождения',
+  `photo_id` int(10) unsigned DEFAULT NULL COMMENT 'Ссылка на основную фотографию пользователя',
+  `status` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Текущий статус',
+  `city` varchar(130) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Город проживания',
+  `country` varchar(130) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Страна проживания',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РџСЂРѕС„РёР»Рё';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Профили';
 
 INSERT INTO `profiles` (`user_id`, `gender`, `birthday`, `photo_id`, `status`, `city`, `country`, `created_at`, `updated_at`) VALUES (1, '', '2019-05-24', 0, 'quis', 'New Sterling', 'Ethiopia', '2013-03-24 17:49:37', '2016-12-06 01:05:29');
 INSERT INTO `profiles` (`user_id`, `gender`, `birthday`, `photo_id`, `status`, `city`, `country`, `created_at`, `updated_at`) VALUES (2, '', '1977-09-12', 0, 'qui', 'New Cathrine', 'Cyprus', '2017-05-28 19:40:45', '2018-09-13 04:06:42');
@@ -695,17 +693,17 @@ INSERT INTO `profiles` (`user_id`, `gender`, `birthday`, `photo_id`, `status`, `
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Р?РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
-  `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Р?РјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-  `last_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Р¤Р°РјРёР»РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-  `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РџРѕС‡С‚Р°',
-  `phone` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'РўРµР»РµС„РѕРЅ',
-  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
+  `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Имя пользователя',
+  `last_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Фамилия пользователя',
+  `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Почта',
+  `phone` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Телефон',
+  `created_at` datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РџРѕР»СЊР·РѕРІР°С‚РµР»Рё';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Пользователи';
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone`, `created_at`, `updated_at`) VALUES (1, 'Tanner', 'Robel', 'dorothy.haag@example.org', '(381)859-3327x97651', '2018-02-16 01:06:06', '2017-11-10 19:49:23');
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone`, `created_at`, `updated_at`) VALUES (2, 'Clare', 'Kirlin', 'ola15@example.net', '+16(8)7694815291', '2011-03-03 18:41:04', '2015-04-12 07:48:38');
